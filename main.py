@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 from analysis import analyze_safety, calculate_energy, analyze_components
 from chatbot import get_chatbot_response
 
 app = Flask(__name__)
+CORS(app) # Enable CORS for Next.js frontend
 
 # --- Routes ---
 
@@ -41,6 +43,10 @@ def chat():
             
     bot_response = get_chatbot_response(user_message, filename, file_content)
     return jsonify({"response": bot_response})
+
+@app.route('/results')
+def results_page():
+    return render_template('results.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

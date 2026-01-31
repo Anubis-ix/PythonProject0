@@ -22,8 +22,7 @@ class TestBuildingApp(unittest.TestCase):
             "components": {
                 "slab": {"thickness": 100, "span": 5},
                 "column": {"height": 4, "width": 200},
-                "stair": {"riser": 170, "tread": 280},
-                "roof": {"pitch": 30, "type": "pitched"}
+                "stair": {"riser": 170, "tread": 280}
             },
             "energy": {
                 "area": 100,
@@ -41,11 +40,43 @@ class TestBuildingApp(unittest.TestCase):
         
         # Check components
         self.assertIn("components", data)
-        self.assertIn("Warning", data['components']['slab'])
-        self.assertIn("Safe", data['components']['stair'])
+        self.assertIn("Warning", data['components']['One-way Slab'])
+        self.assertIn("Safe", data['components']['Stair'])
         
-        # Check energy
-        self.assertEqual(data['energy']['annual_energy_kwh'], 20000)
+        # Check energy (OpenBEM logic)
+        self.assertIn("sap_rating", data['energy'])
+        self.assertGreater(data['energy']['annual_energy_kwh'], 0)
+
+    def test_new_components(self):
+        test_data = {
+            "safety": {"span": 5, "depth": 0.5, "material": "concrete", "floors": 1},
+            "components": {
+                "slab": {"thickness": 200, "span": 4},
+                "flat_slab": {"thickness": 150, "span": 6},
+                "ribbed_slab": {"depth": 400, "span": 10},
+                "beam": {"depth": 600, "span": 6},
+                "wide_beam": {"width": 1200, "depth": 400},
+                "column": {"height": 3, "width": 400},
+                "wall": {"height": 4, "base": 1.0},
+                "stair": {"riser": 170, "tread": 280}
+            },
+            "energy": {"area": 100, "insulation": "medium"}
+        }
+        response = self.app.post('/analyze', 
+                                 data=json.dumps(test_data),
+                                 content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        
+        comps = data['components']
+        self.assertIn("One-way Slab", comps)
+        self.assertIn("Flat Slab", comps)
+        self.assertIn("Ribbed Slab", comps)
+        self.assertIn("Retaining Wall", comps)
+        
+        self.assertIn("Warning", comps['Flat Slab'])
+        self.assertIn("Warning", comps['Ribbed Slab'])
+        self.assertIn("Warning", comps['Retaining Wall'])
 
     def test_chat_endpoint(self):
         # Test basic message

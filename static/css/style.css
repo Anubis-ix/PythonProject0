@@ -63,8 +63,51 @@ h1 {
 .subtitle {
     text-align: center;
     color: #bbb;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     font-size: 1.2em;
+}
+
+/* Tabs Styling */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--ansys-border);
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-link {
+    background: var(--ansys-gray);
+    color: var(--ansys-white);
+    padding: 12px 25px;
+    border: 1px solid var(--ansys-border);
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+}
+
+.tab-link:hover {
+    background: var(--ansys-border);
+}
+
+.tab-link.active {
+    background: var(--ansys-gold);
+    color: var(--ansys-black);
+    border-color: var(--ansys-gold);
+}
+
+.tab-content {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .grid {
