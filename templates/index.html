@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Building Safety & Energy Analyzer</title>
+
+    <!-- Flask static CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <h1>Building Safety & Energy Analyzer</h1>
+
+    <p>This tool analyzes structural safety, components, and energy performance.</p>
+
+    <form id="analyze-form">
+        <h3>Basic Inputs</h3>
+
+        <label>Span (m):</label>
+        <input type="number" step="0.1" id="span"><br><br>
+
+        <label>Depth (m):</label>
+        <input type="number" step="0.1" id="depth"><br><br>
+
+        <button type="submit">Analyze</button>
+    </form>
+
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById("analyze-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    safety: {
+                        span: document.getElementById("span").value,
+                        depth: document.getElementById("depth").value
+                    }
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        });
+    </script>
+
+</body>
+</html>
