@@ -48,5 +48,3 @@ def chat():
 def results_page():
     return render_template('results.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
