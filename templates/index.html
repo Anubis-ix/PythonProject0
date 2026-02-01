@@ -2,50 +2,424 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Building Safety & Energy Analyzer</title>
-
-    <!-- Flask static CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Analysis System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header>
+        <div class="header-content">
+            <div class="logo">ENGINEERING SIMULATION SITE</div>
+            <nav>
+                <!-- Simple navigation placeholders -->
+            </nav>
+        </div>
+    </header>
 
-    <h1>Building Safety & Energy Analyzer</h1>
+    <div class="container">
+        <h1>Building Analysis System</h1>
+        <p class="subtitle">Advanced Engineering Simulations for Safety and Sustainability.</p>
 
-    <p>This tool analyzes structural safety, components, and energy performance.</p>
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'OverviewTab')">General Overview</button>
+            <button class="tab-link" onclick="openTab(event, 'SlabsTab')">Slab Systems</button>
+            <button class="tab-link" onclick="openTab(event, 'BeamsTab')">Beam Design</button>
+            <button class="tab-link" onclick="openTab(event, 'VerticalTab')">Vertical & Misc</button>
+        </div>
 
-    <form id="analyze-form">
-        <h3>Basic Inputs</h3>
+        <!-- Overview Tab -->
+        <div id="OverviewTab" class="tab-content">
+            <div class="grid">
+                <!-- Safety Analysis Section -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image90.jpeg') }}" alt="Structural Safety">
+                    </div>
+                    <h2>Structural Safety Analysis</h2>
+                    <form id="safetyForm">
+                        <label for="span">Critical Span (meters)</label>
+                        <input type="number" id="span" step="0.1" value="5.0">
 
-        <label>Span (m):</label>
-        <input type="number" step="0.1" id="span"><br><br>
+                        <label for="depth">Effective Depth (meters)</label>
+                        <input type="number" id="depth" step="0.01" value="0.3">
 
-        <label>Depth (m):</label>
-        <input type="number" step="0.1" id="depth"><br><br>
+                        <label for="material">Primary Material</label>
+                        <select id="material">
+                            <option value="concrete">Reinforced Concrete (BS8110/EC2)</option>
+                            <option value="steel">Structural Steel</option>
+                            <option value="wood">Timber</option>
+                        </select>
 
-        <button type="submit">Analyze</button>
-    </form>
+                        <label for="floors">Number of Floors</label>
+                        <input type="number" id="floors" value="1">
+                    </form>
+                </section>
 
-    <pre id="output"></pre>
+                <!-- Energy Analysis Form -->
+                <section class="card">
+                    <h2>Energy & Sustainability</h2>
+                    <form id="energyForm">
+                        <label for="area">Total Floor Area (sqm)</label>
+                        <input type="number" id="area" value="120">
+
+                        <label for="insulation">Insulation Quality</label>
+                        <select id="insulation">
+                            <option value="high">High (Modern Standard)</option>
+                            <option value="medium" selected>Medium (Standard)</option>
+                            <option value="low">Low (Legacy Building)</option>
+                        </select>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!-- Slabs Tab -->
+        <div id="SlabsTab" class="tab-content hidden">
+            <div class="grid">
+                <!-- One-way Slabs -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image12.jpeg') }}" alt="One-way Slabs">
+                    </div>
+                    <h2>One-way Slabs (RCC31)</h2>
+                    <form id="slabForm">
+                        <label for="slab_thickness">Thickness (mm)</label>
+                        <input type="number" id="slab_thickness" value="150">
+                        <label for="slab_span">Max Span (m)</label>
+                        <input type="number" id="slab_span" step="0.1" value="4.0">
+                    </form>
+                </section>
+
+                <!-- Flat Slabs -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image21.jpeg') }}" alt="Flat Slabs">
+                    </div>
+                    <h2>Flat Slabs (RCC33)</h2>
+                    <form id="flatSlabForm">
+                        <label for="fs_thickness">Slab Thickness (mm)</label>
+                        <input type="number" id="fs_thickness" value="250">
+                        <label for="fs_span">Column Spacing (m)</label>
+                        <input type="number" id="fs_span" step="0.1" value="6.0">
+                    </form>
+                </section>
+
+                <!-- Ribbed Slabs -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image34.jpeg') }}" alt="Ribbed Slabs">
+                    </div>
+                    <h2>Ribbed Slabs (RCC32)</h2>
+                    <form id="ribbedSlabForm">
+                        <label for="rs_depth">Total Depth (mm)</label>
+                        <input type="number" id="rs_depth" value="300">
+                        <label for="rs_span">Effective Span (m)</label>
+                        <input type="number" id="rs_span" step="0.1" value="8.0">
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!-- Beams Tab -->
+        <div id="BeamsTab" class="tab-content hidden">
+            <div class="grid">
+                <!-- Continuous Beams -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image54.jpeg') }}" alt="Continuous Beams">
+                    </div>
+                    <h2>Continuous Beams (RCC41)</h2>
+                    <form id="beamForm">
+                        <label for="beam_depth">Beam Depth (mm)</label>
+                        <input type="number" id="beam_depth" value="500">
+                        <label for="beam_span">Main Span (m)</label>
+                        <input type="number" id="beam_span" step="0.1" value="6.0">
+                    </form>
+                </section>
+
+                <!-- Wide Beams -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image56.jpeg') }}" alt="Wide Beams">
+                    </div>
+                    <h2>Wide Beams (RCC43)</h2>
+                    <form id="wideBeamForm">
+                        <label for="wb_width">Beam Width (mm)</label>
+                        <input type="number" id="wb_width" value="1200">
+                        <label for="wb_depth">Beam Depth (mm)</label>
+                        <input type="number" id="wb_depth" value="400">
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!-- Vertical Tab -->
+        <div id="VerticalTab" class="tab-content hidden">
+            <div class="grid">
+                <!-- Columns -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image78.jpeg') }}" alt="Columns">
+                    </div>
+                    <h2>Columns (RCC51)</h2>
+                    <form id="columnForm">
+                        <label for="col_height">Clear Height (m)</label>
+                        <input type="number" id="col_height" step="0.1" value="3.0">
+                        <label for="col_width">Smallest Dimension (mm)</label>
+                        <input type="number" id="col_width" value="300">
+                    </form>
+                </section>
+
+                <!-- Retaining Walls -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image78.jpeg') }}" alt="Retaining Walls">
+                    </div>
+                    <h2>Retaining Walls (RCC62)</h2>
+                    <form id="wallForm">
+                        <label for="wall_height">Wall Height (m)</label>
+                        <input type="number" id="wall_height" step="0.1" value="4.0">
+                        <label for="wall_base">Base Width (m)</label>
+                        <input type="number" id="wall_base" step="0.1" value="2.0">
+                    </form>
+                </section>
+
+                <!-- Stairs -->
+                <section class="card component-card">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/image90.jpeg') }}" alt="Stairs">
+                    </div>
+                    <h2>Stairs & Landings (RCC72)</h2>
+                    <form id="stairForm">
+                        <label for="stair_riser">Riser Height (mm)</label>
+                        <input type="number" id="stair_riser" value="170">
+                        <label for="stair_tread">Tread Depth (mm)</label>
+                        <input type="number" id="stair_tread" value="280">
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="runAnalysis()" id="analyzeBtn">Run Simulation</button>
+        </div>
+
+        <div id="results" class="results-container hidden">
+            <h2>Simulation Results</h2>
+            <div id="safetyResult" class="result-box"></div>
+            <div id="componentResult" class="result-box"></div>
+            <div id="energyResult" class="result-box"></div>
+        </div>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" onclick="toggleChat()">💬</div>
+        <div id="chatWindow" class="chat-window hidden">
+            <div class="chat-header">
+                <span>Engineering AI Assistant</span>
+                <span style="cursor:pointer" onclick="toggleChat()">✖</span>
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot-message">Hello! I am your Engineering AI assistant. How can I help you with your building analysis today?</div>
+            </div>
+            <div class="chat-input">
+                <input type="file" id="fileInput" style="display:none" onchange="handleFileUpload(event)">
+                <button class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
+                <input type="text" id="chatInput" placeholder="Ask about safety or energy..." onkeypress="handleChatKey(event)">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+            <div id="filePreview" class="file-preview hidden"></div>
+        </div>
+    </div>
 
     <script>
-        document.getElementById("analyze-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
+        let attachedFile = null;
 
-            const response = await fetch("/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    safety: {
-                        span: document.getElementById("span").value,
-                        depth: document.getElementById("depth").value
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.add("hidden");
+            }
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).classList.remove("hidden");
+            evt.currentTarget.className += " active";
+        }
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('hidden');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                attachedFile = file;
+                const preview = document.getElementById('filePreview');
+                preview.innerHTML = `<span>Attached: ${file.name}</span><button onclick="removeFile()">✖</button>`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        function removeFile() {
+            attachedFile = null;
+            const preview = document.getElementById('filePreview');
+            preview.innerHTML = '';
+            preview.classList.add('hidden');
+            document.getElementById('fileInput').value = '';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message && !attachedFile) return;
+
+            const formData = new FormData();
+            formData.append('message', message);
+            if (attachedFile) {
+                formData.append('file', attachedFile);
+                appendMessage('user', `Uploaded file: ${attachedFile.name}${message ? ' - ' + message : ''}`);
+            } else {
+                appendMessage('user', message);
+            }
+
+            input.value = '';
+            removeFile();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                appendMessage('bot', data.response);
+            } catch (error) {
+                appendMessage('bot', 'Sorry, I am having trouble connecting to the engineering core.');
+            }
+        }
+
+        function handleChatKey(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+
+            // Basic formatting for AI reports
+            if (sender === 'bot') {
+                // Replace markdown-style bold and headers for simulation display
+                let formattedText = text
+                    .replace(/### (.*)/g, '<strong>$1</strong>')
+                    .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                messageDiv.innerHTML = formattedText;
+            } else {
+                messageDiv.innerText = text;
+            }
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function runAnalysis() {
+            const data = {
+                safety: {
+                    span: document.getElementById('span').value,
+                    depth: document.getElementById('depth').value,
+                    material: document.getElementById('material').value,
+                    floors: document.getElementById('floors').value
+                },
+                components: {
+                    slab: {
+                        thickness: document.getElementById('slab_thickness').value,
+                        span: document.getElementById('slab_span').value
+                    },
+                    flat_slab: {
+                        thickness: document.getElementById('fs_thickness').value,
+                        span: document.getElementById('fs_span').value
+                    },
+                    ribbed_slab: {
+                        depth: document.getElementById('rs_depth').value,
+                        span: document.getElementById('rs_span').value
+                    },
+                    beam: {
+                        depth: document.getElementById('beam_depth').value,
+                        span: document.getElementById('beam_span').value
+                    },
+                    wide_beam: {
+                        width: document.getElementById('wb_width').value,
+                        depth: document.getElementById('wb_depth').value
+                    },
+                    column: {
+                        height: document.getElementById('col_height').value,
+                        width: document.getElementById('col_width').value
+                    },
+                    wall: {
+                        height: document.getElementById('wall_height').value,
+                        base: document.getElementById('wall_base').value
+                    },
+                    stair: {
+                        riser: document.getElementById('stair_riser').value,
+                        tread: document.getElementById('stair_tread').value
                     }
-                })
+                },
+                energy: {
+                    area: document.getElementById('area').value,
+                    insulation: document.getElementById('insulation').value
+                }
+            };
+
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
 
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-        });
-    </script>
+            const result = await response.json();
+            localStorage.setItem('lastSimulationResult', JSON.stringify(result));
+            window.location.href = '/results';
+        }
 
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.remove('hidden');
+
+            const safetyDiv = document.getElementById('safetyResult');
+            let safetyHtml = `<h3>General Safety Status: ${data.safety.status}</h3>`;
+            if (data.safety.errors) {
+                safetyHtml += '<ul>' + data.safety.errors.map(e => `<li class="error">${e}</li>`).join('') + '</ul>';
+            } else {
+                safetyHtml += `<p class="success">${data.safety.message}</p>`;
+            }
+            safetyDiv.innerHTML = safetyHtml;
+
+            const componentDiv = document.getElementById('componentResult');
+            let compHtml = '<h3>Component Analysis</h3><ul>';
+            for (const [comp, msg] of Object.entries(data.components)) {
+                const isWarning = msg.includes('Warning');
+                compHtml += `<li class="${isWarning ? 'error' : 'success'}"><strong>${comp.toUpperCase()}:</strong> ${msg}</li>`;
+            }
+            compHtml += '</ul>';
+            componentDiv.innerHTML = compHtml;
+
+            const energyDiv = document.getElementById('energyResult');
+            energyDiv.innerHTML = `
+                <h3>OpenBEM Energy Analysis</h3>
+                <p><strong>SAP Rating:</strong> ${data.energy.sap_rating} <span class="badge">${data.energy.category}</span></p>
+                <p>Estimated Annual Consumption: <strong>${data.energy.annual_energy_kwh.toLocaleString()} kWh</strong></p>
+                <p><em>Advice: ${data.energy.advice}</em></p>
+            `;
+
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>

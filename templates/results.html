@@ -2,14 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Analysis Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation Results - ENGINEERING SIMULATION SITE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header>
+        <div class="header-content">
+            <div class="logo">ENGINEERING SIMULATION SITE</div>
+            <nav>
+                <a href="/" style="color: var(--ansys-gold); text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Back to Home</a>
+            </nav>
+        </div>
+    </header>
 
-    <h1>Results Page</h1>
-    <p>Your analysis results will appear here.</p>
+    <div class="container">
+        <h1>Detailed Simulation Report</h1>
+        <p class="subtitle">Comprehensive analysis based on your technical measurements.</p>
 
-    <a href="/">Back to Home</a>
+        <div id="resultsContent" class="results-container">
+            <div id="safetyResult" class="result-box">
+                <h3>General Safety Status</h3>
+                <div id="safetyBody">Loading...</div>
+            </div>
+            <div id="componentResult" class="result-box">
+                <h3>Component Analysis</h3>
+                <div id="componentBody">Loading...</div>
+            </div>
+            <div id="energyResult" class="result-box">
+                <h3>OpenBEM Energy Analysis</h3>
+                <div id="energyBody">Loading...</div>
+            </div>
+        </div>
 
+        <div class="actions">
+            <button onclick="window.print()">Print Full Report</button>
+            <button onclick="window.location.href='/'" style="background-color: var(--ansys-gray); color: var(--ansys-white); margin-left: 10px;">New Simulation</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = JSON.parse(localStorage.getItem('lastSimulationResult'));
+            if (!data) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Display Safety Results
+            const safetyBody = document.getElementById('safetyBody');
+            let safetyHtml = `<h4>Status: ${data.safety.status}</h4>`;
+            if (data.safety.errors) {
+                safetyHtml += '<ul>' + data.safety.errors.map(e => `<li class="error">${e}</li>`).join('') + '</ul>';
+            } else {
+                safetyHtml += `<p class="success">${data.safety.message}</p>`;
+            }
+            safetyBody.innerHTML = safetyHtml;
+
+            // Display Component Results
+            const componentBody = document.getElementById('componentBody');
+            let compHtml = '<ul>';
+            for (const [comp, msg] of Object.entries(data.components)) {
+                const isWarning = msg.includes('Warning');
+                compHtml += `<li class="${isWarning ? 'error' : 'success'}"><strong>${comp.toUpperCase()}:</strong> ${msg}</li>`;
+            }
+            compHtml += '</ul>';
+            componentBody.innerHTML = compHtml;
+
+            // Display Energy Results
+            const energyBody = document.getElementById('energyBody');
+            energyBody.innerHTML = `
+                <p><strong>SAP Rating:</strong> ${data.energy.sap_rating} <span class="badge">${data.energy.category}</span></p>
+                <p>Estimated Annual Consumption: <strong>${data.energy.annual_energy_kwh.toLocaleString()} kWh</strong></p>
+                <p><em>Advice: ${data.energy.advice}</em></p>
+            `;
+        });
+    </script>
 </body>
 </html>
